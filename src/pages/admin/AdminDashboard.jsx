@@ -1,7 +1,7 @@
+
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
-// import { getInstructorDashboard } from '../../../../services/operations/profileAPI.js'
 import { fetchAdminItems } from '../../services/operations/itemDetailsAPI.js'
 import DashboardChart from './DashboardChart.jsx'
 
@@ -19,13 +19,8 @@ const AdminDashboard = () => {
         (async () => {
             try {
                 if (token) {
-                    // Fetch instructor dashboard details and courses
-                    // const instructorDetails = await getInstructorDashboard(token, dispatch)
                     const instructorCourses = await fetchAdminItems(token)
-
-                    // Set the retrieved data to state
                     setCourses(instructorCourses)
-                    //setDetails(instructorDetails)
                 }
             } catch (error) {
                 console.error('Error fetching data:', error.message)
@@ -33,74 +28,104 @@ const AdminDashboard = () => {
         })()
     }, [token, dispatch])
 
-    // Calculate total earnings and students from details
     const totalEarnings = details?.reduce((acc, course) => acc + course?.totalRevenue, 0)
     const totalStudents = details?.reduce((acc, course) => acc + course?.totalStudents, 0)
 
+    const stats = [
+        { title: 'Total Items', value: courses?.length || 0, bgColor: 'bg-gradient-to-r from-blue-500 to-blue-600' },
+        { title: 'Total Users', value: totalStudents || 0, bgColor: 'bg-gradient-to-r from-purple-500 to-purple-600' },
+        { title: 'Total Earnings', value: `₹ ${totalEarnings || 0}`, bgColor: 'bg-gradient-to-r from-green-500 to-green-600' }
+    ]
+
     return (
-        <div className='bg-pink-600'>
-            <div className='mx-auto w-11/12 max-w-[1000px] py-10'>
-                <div>
-                    <div className='space-y-2'>
-                        <h1 className='text-2xl font-bold text-richblack-5'>Hi {user?.name || 'Instructor'} 👋</h1>
-                        <p className='font-medium text-richblack-200'>Let's start something new</p>
-                    </div>
-                    <div className='my-4 flex flex-col-reverse gap-3 md:flex-row md:h-[450px] md:space-x-4'>
-                        <div className='flex flex-col flex-1 rounded-md bg-richblack-800 p-6'>
-                            <div className='flex items-center justify-between'>
-                                <p className='text-lg font-bold text-richblack-5'>Visualize</p>
-                                <div className='flex items-center space-x-4'>
-                                    <button onClick={() => setCurrentChart('revenue')}
-                                        className={`px-2 py-2 rounded-md ${currentChart === 'revenue' ? 'bg-richblack-900 text-yellow-100' : 'bg-richblack-800 text-richblack-100'}`}>
-                                        Revenue
-                                    </button>
-                                    <button onClick={() => setCurrentChart('students')}
-                                        className={`px-2 py-2 rounded-md ${currentChart === 'students' ? 'bg-richblack-900 text-yellow-100' : 'bg-richblack-800 text-richblack-100'}`}>
-                                        Users
-                                    </button>
-                                </div>
-                            </div>
-                            <DashboardChart details={details} currentChart={currentChart} />
+        <div className='min-h-screen bg-gray-100'>
+            <div className='mx-auto w-11/12 max-w-[1200px] py-8'>
+                {/* Header */}
+                <div className='mb-8 bg-white rounded-2xl p-6 shadow-sm'>
+                    <h1 className='text-3xl font-bold text-gray-800'>Welcome back, {user?.name || 'Admin'} 👋</h1>
+                    <p className='text-gray-600 mt-2'>Here's what's happening with your store today.</p>
+                </div>
+
+                {/* Stats Cards */}
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
+                    {stats.map((stat, index) => (
+                        <div key={index} className={`${stat.bgColor} rounded-2xl p-6 shadow-sm transition-transform hover:scale-105`}>
+                            <h3 className='text-white text-lg font-medium'>{stat.title}</h3>
+                            <p className='text-white text-3xl font-bold mt-2'>{stat.value}</p>
                         </div>
-                        <div className='flex min-w-[250px] flex-col rounded-md bg-richblack-800 p-6'>
-                            <p className='text-lg font-bold text-richblack-5'>Statistics</p>
-                            <div className='mt-4 space-y-4'>
-                                <div>
-                                    <p className='text-lg text-richblack-200'>Total Items</p>
-                                    <p className='text-3xl font-semibold text-richblack-50'>{courses?.length || 0}</p>
-                                </div>
-                                <div>
-                                    <p className='text-lg text-richblack-200'>Total Users</p>
-                                    <p className='text-3xl font-semibold text-richblack-50'>{totalStudents || 0}</p>
-                                </div>
-                                <div>
-                                    <p className='text-lg text-richblack-200'>Total Earnings</p>
-                                    <p className='text-3xl font-semibold text-richblack-50'>₹ {totalEarnings || 0}</p>
-                                </div>
+                    ))}
+                </div>
+
+                {/* Charts Section */}
+                <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8'>
+                    <div className='lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm'>
+                        <div className='flex items-center justify-between mb-6'>
+                            <h2 className='text-xl font-bold text-gray-800'>Analytics Overview</h2>
+                            <div className='flex gap-2'>
+                                <button 
+                                    onClick={() => setCurrentChart('revenue')}
+                                    className={`px-4 py-2 rounded-lg transition-all ${
+                                        currentChart === 'revenue' 
+                                        ? 'bg-blue-500 text-white' 
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    Revenue
+                                </button>
+                                <button 
+                                    onClick={() => setCurrentChart('students')}
+                                    className={`px-4 py-2 rounded-lg transition-all ${
+                                        currentChart === 'students' 
+                                        ? 'bg-blue-500 text-white' 
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    Users
+                                </button>
                             </div>
+                        </div>
+                        <DashboardChart details={details} currentChart={currentChart} />
+                    </div>
+
+                    <div className='bg-white rounded-2xl p-6 shadow-sm'>
+                        <h2 className='text-xl font-bold text-gray-800 mb-4'>Quick Actions</h2>
+                        <div className='space-y-3'>
+                            <button onClick={() => navigate('/dashboard/add-item')} 
+                                className='w-full py-3 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors'>
+                                Add New Item
+                            </button>
+                            <button onClick={() => navigate('/dashboard/my-items')} 
+                                className='w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors'>
+                                Manage Items
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div className='rounded-md bg-richblack-800 p-6'>
-                    <div className='flex items-center justify-between'>
-                        <p className='text-lg font-bold text-richblack-5'>Your Items</p>
-                        <button onClick={() => navigate('/dashboard/my-courses')} className='text-xs font-semibold text-yellow-50'>
-                            View all
+
+                {/* Recent Items */}
+                <div className='bg-white rounded-2xl p-6 shadow-sm'>
+                    <div className='flex items-center justify-between mb-6'>
+                        <h2 className='text-xl font-bold text-gray-800'>Recent Items</h2>
+                        <button 
+                            onClick={() => navigate('/dashboard/my-courses')} 
+                            className='text-blue-500 hover:text-blue-600 font-medium'
+                        >
+                            View all →
                         </button>
                     </div>
-                    <div className='my-4 flex space-x-6'>
+                    <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                         {courses?.length === 0 ? (
-                            <p className='text-sm font-medium text-richblack-300'>You have not created any items yet</p>
+                            <p className='text-gray-500'>You have not created any items yet</p>
                         ) : (
                             courses.slice(0, 3).map((course, index) => (
-                                <div key={index} className='w-1/3'>
-                                    <img src={course?.thumbnail} alt="course" className='aspect-video md:h-[201px] w-full rounded-md object-cover' />
-                                    <div className='mt-3 w-full'>
-                                        <p className='text-sm font-medium text-richblack-50'>{course?.courseName}</p>
-                                        <div className='mt-1 md:space-x-2 md:flex'>
-                                            <p className='text-xs font-medium text-richblack-300'>{course?.studentsEnrolled?.length} Students</p>
-                                            <p className='hidden md:block text-xs font-medium text-richblack-300'>|</p>
-                                            <p className='text-xs font-medium text-richblack-300'>₹ {course?.price}</p>
+                                <div key={index} className='bg-gray-50 rounded-xl overflow-hidden transition-transform hover:scale-105'>
+                                    <img src={course?.thumbnail} alt="course" className='w-full h-48 object-cover' />
+                                    <div className='p-4'>
+                                        <h3 className='font-medium text-gray-800'>{course?.courseName}</h3>
+                                        <div className='flex items-center gap-3 mt-2 text-gray-600 text-sm'>
+                                            <span>{course?.studentsEnrolled?.length} Students</span>
+                                            <span>•</span>
+                                            <span>₹ {course?.price}</span>
                                         </div>
                                     </div>
                                 </div>
