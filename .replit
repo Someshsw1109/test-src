@@ -5,4 +5,24 @@ run = "npm run dev"
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "npm run dev"]
+run = ["sh", "-c", "npm run preview -- --host 0.0.0.0 --port 80"]
+build = ["sh", "-c", "npm run build"]
+
+[workflows]
+runButton = "Frontend"
+
+[[workflows.workflow]]
+name = "Backend"
+author = 39849688
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend && npm run dev"
+
+[[workflows.workflow]]
+name = "Frontend"
+author = 39849688
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
