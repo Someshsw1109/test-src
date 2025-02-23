@@ -136,19 +136,8 @@ function Signup() {
             )}
           </span>
         </label>
-        <label>
-          <p className="mb-1 text-[0.875rem] text-richblack-5">Role</p>
-          <select
-            value={role}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, role: e.target.value }))
-            }
-            className="w-full rounded-md bg-richblack-800 p-3 text-richblack-5"
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-        </label>
+        {/* Role is now set to "user" by default */}
+        <input type="hidden" name="role" value="user" />
 
         <button
           type="submit"

@@ -46,13 +46,14 @@ export function sendOtp(email, navigate) {
 
 
 export function signUp(
-  role,
   name,
   email,
   password,
   otp,
   navigate
 ) {
+  // Force role to be "user" for security
+  const role = "user";
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
     dispatch(setLoading(true))
