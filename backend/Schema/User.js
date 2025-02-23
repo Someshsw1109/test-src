@@ -16,7 +16,14 @@ const userSchema=new mongoose.Schema({
     role:{
         type:String,
         required:true,
-        default:"user"
+        enum: ['user', 'admin'],
+        default:"user",
+        validate: {
+            validator: function(v) {
+                return ['user', 'admin'].includes(v);
+            },
+            message: props => `${props.value} is not a valid role!`
+        }
     },
     phoneNumber:{
         type:String,

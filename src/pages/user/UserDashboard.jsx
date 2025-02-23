@@ -1,151 +1,90 @@
-import { useContext } from "react";
-import Layout from "../../components/layout/Layout";
-import myContext from "../../context/myContext";
-import Loader from "../../components/loader/Loader";
+import React, { useContext } from 'react';
+import { myContext } from '../../context/data/myContext';
+import Layout from '../../components/layout/Layout';
+import { FiShoppingBag, FiUser, FiMail, FiCalendar } from 'react-icons/fi';
 
 const UserDashboard = () => {
-    // user
     const user = JSON.parse(localStorage.getItem('users'));
-
     const context = useContext(myContext);
-    const { loading, getAllOrder } = context
-    // console.log(getAllOrder)
+    const { loading, getAllOrder } = context;
 
-    // console.log(user)
     return (
         <Layout>
-            <div className=" container mx-auto px-4 py-5 lg:py-8">
-                {/* Top  */}
-                <div className="top ">
-                    {/* main  */}
-                    <div className=" bg-pink-50 py-5 rounded-xl border border-pink-100">
-                        {/* image  */}
-                        <div className="flex justify-center">
-                            <img src="https://cdn-icons-png.flaticon.com/128/2202/2202112.png" alt="" />
-                        </div>
-                        {/* text  */}
-                        <div className="">
-                            {/* Name  */}
-                            <h1 className=" text-center text-lg">
-                                <span className=" font-bold">Name : </span>
-                                {user?.name}
-                            </h1>
-
-                            {/* Email  */}
-                            <h1 className=" text-center text-lg">
-                                <span className=" font-bold">Email : </span>
-                                {user?.email}
-                            </h1>
-
-                            {/* Date  */}
-                            <h1 className=" text-center text-lg">
-                                <span className=" font-bold">Date : </span>
-                                {user?.date}
-                            </h1>
-
-                            {/* Role  */}
-                            <h1 className=" text-center text-lg">
-                                <span className=" font-bold">Role : </span>
-                                {user?.role}
-                            </h1>
-                        </div>
-                    </div>
-                </div>
-
-                {/* bottom  */}
-                <div className="bottom">
-                    {/* main 1 */}
-                    <div className="mx-auto my-4 max-w-6xl px-2 md:my-6 md:px-0">
-                        {/* text  */}
-                        <h2 className=" text-2xl lg:text-3xl font-bold">Order Details</h2>
-
-                        <div className="flex justify-center relative top-10">
-                        {loading && <Loader/>}
+            <div className="min-h-screen bg-gray-50 py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="p-8 sm:p-12 bg-gradient-to-r from-purple-500 to-pink-500">
+                            <div className="flex flex-col sm:flex-row items-center justify-between">
+                                <div className="flex items-center mb-4 sm:mb-0">
+                                    <div className="h-20 w-20 rounded-full bg-white p-1">
+                                        <img
+                                            src="https://cdn-icons-png.flaticon.com/128/2202/2202112.png"
+                                            alt="Profile"
+                                            className="h-full w-full rounded-full object-cover"
+                                        />
+                                    </div>
+                                    <div className="ml-4 text-white">
+                                        <h1 className="text-2xl font-bold">{user?.name}</h1>
+                                        <p className="text-purple-100">{user?.role}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* main 2 */}
-                        {getAllOrder.filter((obj) => obj.userid === user?.uid).map((order, index) => {
-                            // console.log(order);
-                            return (
-                                <div key={index}>
-                                    {order.cartItems.map((item, index) => {
-                                        // console.log('item', item);
-                                        const { id, date, quantity, price, title, productImageUrl, category } = item
-                                        // console.log('order', order)
-                                        const { status } = order
-                                        return (
-                                            <div key={index} className="mt-5 flex flex-col overflow-hidden rounded-xl border border-pink-100 md:flex-row">
-                                                {/* main 3  */}
-                                                <div className="w-full border-r border-pink-100 bg-pink-50 md:max-w-xs">
-                                                    {/* left  */}
-                                                    <div className="p-8">
-                                                        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-1">
-                                                            <div className="mb-4">
-                                                                <div className="text-sm font-semibold text-black">Order Id</div>
-                                                                <div className="text-sm font-medium text-gray-900">#{id}</div>
-                                                            </div>
+                        <div className="p-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="bg-purple-50 rounded-xl p-6 flex items-center">
+                                    <FiUser className="text-3xl text-purple-500" />
+                                    <div className="ml-4">
+                                        <p className="text-sm text-gray-500">Account Type</p>
+                                        <p className="text-lg font-semibold text-gray-900">{user?.role}</p>
+                                    </div>
+                                </div>
 
-                                                            <div className="mb-4">
-                                                                <div className="text-sm font-semibold">Date</div>
-                                                                <div className="text-sm font-medium text-gray-900">{date}</div>
-                                                            </div>
+                                <div className="bg-pink-50 rounded-xl p-6 flex items-center">
+                                    <FiMail className="text-3xl text-pink-500" />
+                                    <div className="ml-4">
+                                        <p className="text-sm text-gray-500">Email</p>
+                                        <p className="text-lg font-semibold text-gray-900">{user?.email}</p>
+                                    </div>
+                                </div>
 
-                                                            <div className="mb-4">
-                                                                <div className="text-sm font-semibold">Total Amount</div>
-                                                                <div className="text-sm font-medium text-gray-900">₹ {price * quantity}</div>
-                                                            </div>
+                                <div className="bg-blue-50 rounded-xl p-6 flex items-center">
+                                    <FiShoppingBag className="text-3xl text-blue-500" />
+                                    <div className="ml-4">
+                                        <p className="text-sm text-gray-500">Total Orders</p>
+                                        <p className="text-lg font-semibold text-gray-900">
+                                            {getAllOrder?.length || 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 
-                                                            <div className="mb-4">
-                                                                <div className="text-sm font-semibold">Order Status</div>
-                                                                {status === 'pending' ?
-                                                                    <div className="text-sm font-medium text-red-800 first-letter:uppercase">{status}</div>
-                                                                    : <div className="text-sm font-medium text-green-800 first-letter:uppercase">{status}</div>
-                                                                }
-                                                            </div>
-                                                        </div>
+                            {getAllOrder && getAllOrder.length > 0 && (
+                                <div className="mt-8">
+                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Orders</h2>
+                                    <div className="bg-white rounded-xl border border-gray-200">
+                                        {getAllOrder.map((order, index) => (
+                                            <div key={index} className="border-b border-gray-200 p-4 last:border-b-0">
+                                                <div className="flex justify-between items-center">
+                                                    <div>
+                                                        <p className="font-medium text-gray-900">Order #{order.id}</p>
+                                                        <p className="text-sm text-gray-500">{order.date}</p>
                                                     </div>
-                                                </div>
-                                                {/* right  */}
-                                                <div className="flex-1">
-                                                    <div className="p-8">
-                                                        <ul className="-my-7 divide-y divide-gray-200">
-                                                            <li
-                                                                className="flex flex-col justify-between space-x-5 py-7 md:flex-row"
-                                                            >
-                                                                <div className="flex flex-1 items-stretch">
-                                                                    <div className="flex-shrink-0">
-                                                                        <img
-                                                                            className="h-40 w-40 rounded-lg border border-gray-200 object-contain"
-                                                                            src={productImageUrl}
-                                                                            alt="img"
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className="ml-5 flex flex-col justify-between">
-                                                                        <div className="flex-1">
-                                                                            <p className="text-sm font-bold text-gray-900">{title}</p>
-                                                                            <p className="mt-1.5 text-sm font-medium text-gray-500">{category}</p>
-                                                                        </div>
-
-                                                                        <p className="mt-4 text-sm font-medium text-gray-500">x {quantity}</p>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="ml-auto flex flex-col items-end justify-between">
-                                                                    <p className="text-right text-sm font-bold text-gray-900">₹ {price}</p>
-                                                                </div>
-                                                            </li>
-                                                        </ul>
-
-                                                    </div>
+                                                    <span className={`px-3 py-1 rounded-full text-sm ${
+                                                        order.status === 'delivered' 
+                                                            ? 'bg-green-100 text-green-800' 
+                                                            : 'bg-yellow-100 text-yellow-800'
+                                                    }`}>
+                                                        {order.status}
+                                                    </span>
                                                 </div>
                                             </div>
-                                        )
-                                    })}
+                                        ))}
+                                    </div>
                                 </div>
-                            )
-                        })}
-
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -154,4 +93,3 @@ const UserDashboard = () => {
 }
 
 export default UserDashboard;
-
