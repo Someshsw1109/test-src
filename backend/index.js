@@ -5,7 +5,11 @@ import cors from 'cors';
 // import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils.js';
 dotenv.config();
 import dbConnect from './config/db.js';
-const port = 5000
+const port = process.env.PORT || 5000
+app.use(cors({
+    origin: "*",
+    credentials: true
+}))
 import UserRoute from "./routes/User.js"
 import ItemRoute from "./routes/Item.js"
 import cookieParser from "cookie-parser";
